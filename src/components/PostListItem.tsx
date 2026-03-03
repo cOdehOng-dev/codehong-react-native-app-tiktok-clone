@@ -1,0 +1,115 @@
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import React from "react";
+import { useVideoPlayer, VideoView } from "expo-video";
+import { Ionicons } from "@expo/vector-icons";
+
+const videoSource = {
+  uri: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+};
+
+export default function PostListItem() {
+  const height = Dimensions.get("window").height;
+  const player = useVideoPlayer(videoSource, (player) => {
+    player.loop = true;
+    player.play();
+  });
+  return (
+    <View style={{ height: height - 80 }}>
+      <VideoView
+        style={{ flex: 1 }}
+        player={player}
+        contentFit="cover"
+        nativeControls={false}
+      />
+      <View style={styles.interactionBar}>
+        <TouchableOpacity
+          style={styles.interactionButton}
+          onPress={() => console.log("Like Pressed")}
+        >
+          <Ionicons name="heart" size={33} color="#fff" />
+          <Text style={styles.interactionText}>0</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.interactionButton}
+          onPress={() => console.log("Comment Pressed")}
+        >
+          <Ionicons name="chatbubble" size={33} color="#fff" />
+          <Text style={styles.interactionText}>0</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.interactionButton}
+          onPress={() => console.log("Share Pressed")}
+        >
+          <Ionicons name="share-social" size={33} color="#fff" />
+          <Text style={styles.interactionText}>20</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.avatar}
+          onPress={() => console.log("Profile Pressed")}
+        >
+          <Text style={styles.avatarText}>L</Text>
+        </TouchableOpacity>
+      </View>
+
+      <View style={styles.videoInfo}>
+        <Text style={styles.username}>Lukas</Text>
+        <Text style={styles.description}>Hello notJust Devloper!</Text>
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  interactionBar: {
+    position: "absolute",
+    right: 20,
+    bottom: 20,
+    alignItems: "center",
+    gap: 25,
+  },
+  interactionButton: {
+    alignItems: "center",
+    gap: 5,
+  },
+  interactionText: {
+    color: "#fff",
+    fontSize: 12,
+    fontWeight: "600",
+  },
+  avatar: {
+    width: 35,
+    height: 35,
+    backgroundColor: "#fff",
+    borderRadius: 20,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  avatarText: {
+    fontSize: 25,
+    fontWeight: "bold",
+  },
+  videoInfo: {
+    position: "absolute", // 부모 View 기준으로 절대 위치 배치
+    bottom: 20, // 아래에서 20px 위
+    left: 20, // 왼쪽에서 20px
+    right: 100, // 오른쪽에서 100px (우측 여백 확보 → 좋아요/댓글 버튼 공간)
+    gap: 5, // 자식 요소들 사이 간격 5px
+  },
+  username: {
+    color: "#fff",
+    fontSize: 16,
+    fontWeight: "600",
+  },
+  description: {
+    color: "#fff",
+  },
+});
