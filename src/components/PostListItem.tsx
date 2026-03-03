@@ -8,14 +8,16 @@ import {
 import React from "react";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { Ionicons } from "@expo/vector-icons";
+import { Post } from "@/types/types";
 
-const videoSource = {
-  uri: "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
+type VideoItemProps = {
+  postItem: Post;
 };
 
-export default function PostListItem() {
+export default function PostListItem({ postItem }: VideoItemProps) {
   const height = Dimensions.get("window").height;
-  const player = useVideoPlayer(videoSource, (player) => {
+  const { nrOfComments, nrOfLikes, nrOfShares, description, user, video_url } = postItem;
+  const player = useVideoPlayer(video_url, (player) => {
     player.loop = true;
     player.play();
   });
@@ -33,7 +35,7 @@ export default function PostListItem() {
           onPress={() => console.log("Like Pressed")}
         >
           <Ionicons name="heart" size={33} color="#fff" />
-          <Text style={styles.interactionText}>0</Text>
+          <Text style={styles.interactionText}>{nrOfLikes[0].count || 0}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -41,7 +43,9 @@ export default function PostListItem() {
           onPress={() => console.log("Comment Pressed")}
         >
           <Ionicons name="chatbubble" size={33} color="#fff" />
-          <Text style={styles.interactionText}>0</Text>
+          <Text style={styles.interactionText}>
+            {nrOfComments[0].count || 0}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity
@@ -49,20 +53,20 @@ export default function PostListItem() {
           onPress={() => console.log("Share Pressed")}
         >
           <Ionicons name="share-social" size={33} color="#fff" />
-          <Text style={styles.interactionText}>20</Text>
+          <Text style={styles.interactionText}>{nrOfShares[0].count || 0}</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.avatar}
           onPress={() => console.log("Profile Pressed")}
         >
-          <Text style={styles.avatarText}>L</Text>
+          <Text style={styles.avatarText}>{user?.username.charAt(0).toUpperCase()}</Text>
         </TouchableOpacity>
       </View>
 
       <View style={styles.videoInfo}>
-        <Text style={styles.username}>Lukas</Text>
-        <Text style={styles.description}>Hello notJust Devloper!</Text>
+        <Text style={styles.username}>{user.username}</Text>
+        <Text style={styles.description}>{description}</Text>
       </View>
     </View>
   );
