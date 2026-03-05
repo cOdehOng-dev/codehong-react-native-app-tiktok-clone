@@ -5,7 +5,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import React, { useCallback, useEffect } from "react";
+import React, { useCallback } from "react";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { Ionicons } from "@expo/vector-icons";
 import { Post } from "@/types/types";
