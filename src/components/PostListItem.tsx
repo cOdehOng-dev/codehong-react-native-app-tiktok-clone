@@ -5,29 +5,56 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import React from "react";
+import React, { useCallback, useEffect } from "react";
 import { useVideoPlayer, VideoView } from "expo-video";
 import { Ionicons } from "@expo/vector-icons";
 import { Post } from "@/types/types";
+import { useFocusEffect } from "expo-router";
 
 type VideoItemProps = {
   postItem: Post;
+  isActive: boolean;
 };
 
-export default function PostListItem({ postItem }: VideoItemProps) {
+export default function PostListItem({ postItem, isActive }: VideoItemProps) {
   const height = Dimensions.get("window").height;
-  const { nrOfComments, nrOfLikes, nrOfShares, description, user, video_url } = postItem;
+  const { nrOfComments, nrOfLikes, nrOfShares, description, user, video_url } =
+    postItem;
   const player = useVideoPlayer(video_url, (player) => {
     player.loop = true;
-    player.play();
   });
+
+  useFocusEffect(
+    useCallback(() => {
+      if (!player) return;
+
+      try {
+        if (isActive) {
+          player.play();
+        }
+      } catch (error) {
+        console.error(error);
+      }
+
+      return () => {
+        try {
+          if (player && isActive) {
+            player.pause();
+          }
+        } catch (error) {
+          console.error(error);
+        }
+      };
+    }, [isActive, player]),
+  );
+
   return (
     <View style={{ height: height - 80 }}>
       <VideoView
         style={{ flex: 1 }}
         player={player}
         contentFit="cover"
-        nativeControls={false}
+        // nativeControls={false}
       />
       <View style={styles.interactionBar}>
         <TouchableOpacity
@@ -60,7 +87,9 @@ export default function PostListItem({ postItem }: VideoItemProps) {
           style={styles.avatar}
           onPress={() => console.log("Profile Pressed")}
         >
-          <Text style={styles.avatarText}>{user?.username.charAt(0).toUpperCase()}</Text>
+          <Text style={styles.avatarText}>
+            {user?.username.charAt(0).toUpperCase()}
+          </Text>
         </TouchableOpacity>
       </View>
 
